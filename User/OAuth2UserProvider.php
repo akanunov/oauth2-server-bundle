@@ -2,6 +2,7 @@
 
 namespace OAuth2\ServerBundle\User;
 
+use OAuth2\ServerBundle\Entity\User;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Doctrine\ORM\EntityManager;
@@ -37,7 +38,7 @@ class OAuth2UserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        $user = $this->em->getRepository('OAuth2ServerBundle:User')->find($username);
+        $user = $this->em->getRepository(User::class)->find($username);
 
         if (!$user) {
             throw new UsernameNotFoundException(sprintf('Username "%s" not found.', $username));
