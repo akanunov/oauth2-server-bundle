@@ -2,13 +2,16 @@
 
 namespace OAuth2\ServerBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
-class CreateScopeCommand extends ContainerAwareCommand
+class CreateScopeCommand extends Command
 {
+    use ContainerAwareTrait;
+
     protected function configure()
     {
         $this
@@ -21,7 +24,7 @@ class CreateScopeCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->getContainer();
+        $container = $this->container;
         $scopeManager = $container->get('oauth2.scope_manager');
 
         try {
@@ -29,9 +32,10 @@ class CreateScopeCommand extends ContainerAwareCommand
         } catch (\Doctrine\DBAL\DBALException $e) {
             $output->writeln('<fg=red>Unable to create scope ' . $input->getArgument('scope') . '</fg=red>');
 
-            return;
+            return 1;
         }
 
         $output->writeln('<fg=green>Scope ' . $input->getArgument('scope') . ' created</fg=green>');
+        return 0;
     }
 }
