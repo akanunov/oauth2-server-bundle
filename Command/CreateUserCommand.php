@@ -2,6 +2,8 @@
 
 namespace OAuth2\ServerBundle\Command;
 
+use OAuth2\ServerBundle\Manager\ScopeManager;
+use OAuth2\ServerBundle\User\OAuth2UserProvider;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,8 +12,15 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class CreateUserCommand extends Command
 {
-    use ContainerAwareTrait;
+    private OAuth2UserProvider $userProvider;
 
+    /**
+     * @required
+     */
+    public function setUserProvider(OAuth2UserProvider $userProvider): void
+    {
+        $this->userProvider = $userProvider;
+    }
     protected function configure()
     {
         $this
@@ -24,8 +33,7 @@ class CreateUserCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->container;
-        $userProvider = $container->get('oauth2.user_provider');
+        $userProvider = $this->userProvider;
 
         try {
             $userProvider->createUser($input->getArgument('username'), $input->getArgument('password'));

@@ -90,5 +90,10 @@
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="oauth2.scope_manager"/>
         </service>
+        <service id="OAuth2\ServerBundle\Manager\ClientManager" alias="oauth2.client_manager"/>
+        <service id="OAuth2\ServerBundle\Manager\ScopeManager" alias="oauth2.scope_manager"/>
+        <service id="OAuth2\ServerBundle\User\OAuth2UserProvider" alias="oauth2.user_provider"/>
+        <service id="OAuth2\ServerBundle\Command\CreateClientCommand" autowire="true" autoconfigure="true"/>
+        <service id="OAuth2\ServerBundle\Command\CreateScopeCommand" autowire="true" autoconfigure="true"/>
     </services>
 </container>

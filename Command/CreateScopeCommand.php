@@ -2,6 +2,8 @@
 
 namespace OAuth2\ServerBundle\Command;
 
+use OAuth2\ServerBundle\Manager\ClientManager;
+use OAuth2\ServerBundle\Manager\ScopeManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,7 +12,15 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class CreateScopeCommand extends Command
 {
-    use ContainerAwareTrait;
+    private ScopeManager $scopeManager;
+
+    /**
+     * @required
+     */
+    public function setScopeManager(ScopeManager $scopeManager): void
+    {
+        $this->scopeManager = $scopeManager;
+    }
 
     protected function configure()
     {
@@ -24,8 +34,7 @@ class CreateScopeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->container;
-        $scopeManager = $container->get('oauth2.scope_manager');
+        $scopeManager = $this->scopeManager;
 
         try {
             $scopeManager->createScope($input->getArgument('scope'), $input->getArgument('description'));

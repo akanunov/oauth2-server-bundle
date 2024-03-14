@@ -2,15 +2,27 @@
 
 namespace OAuth2\ServerBundle\Command;
 
+use OAuth2\ServerBundle\Manager\ClientManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 class CreateClientCommand extends Command
 {
-    use ContainerAwareTrait;
+
+    private ClientManager $clientManager;
+
+    /**
+     * @required
+     */
+    public function setClientManager(ClientManager $clientManager): void
+    {
+        $this->clientManager = $clientManager;
+    }
+
 
     protected function configure()
     {
@@ -26,8 +38,7 @@ class CreateClientCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container = $this->container;
-        $clientManager = $container->get('oauth2.client_manager');
+        $clientManager = $this->clientManager;
 
         try {
             $client = $clientManager->createClient(
